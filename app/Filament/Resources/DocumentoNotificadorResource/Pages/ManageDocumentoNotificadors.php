@@ -9,7 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageDocumentoNotificadors extends ManageRecords
 {
     protected static string $resource = DocumentoNotificadorResource::class;
-
+    
     protected function getHeaderActions(): array
     {
         return [

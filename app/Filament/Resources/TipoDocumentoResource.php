@@ -19,8 +19,10 @@ class TipoDocumentoResource extends Resource
 {
     protected static ?string $model = TipoDocumento::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Mantenimiento';
+    protected static ?string $navigationLabel = 'Tipo Documento';
+    protected static ?int $navigationSort = 2;
     public static function form(Form $form): Form
     {
         return $form

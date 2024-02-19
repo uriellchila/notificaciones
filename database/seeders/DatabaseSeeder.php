@@ -3,7 +3,12 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Database\Seeders\ContribuyenteSeeder;
+use Database\Seeders\TipoDocumentoSeeder;
+use Database\Seeders\TipoNotificacionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +17,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(ContribuyenteSeeder::class);
+        $this->call(TipoDocumentoSeeder::class);
+        $this->call(TipoNotificacionSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $user=User::factory()->create([
+            'name' => 'Super Administrador',
+            'email' => 'admin@admin.com',
+         ]);
+         $role = Role::create(['name'=>'Super Admin']);
+         $user->assignRole('Super Admin');
     }
 }

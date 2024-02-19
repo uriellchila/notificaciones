@@ -15,13 +15,17 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ContribuyenteResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\ContribuyenteResource\RelationManagers;
 
 class ContribuyenteResource extends Resource
 {
     protected static ?string $model = Contribuyente::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Mantenimiento';
+    protected static ?string $navigationLabel = 'Contribuyentes';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -57,6 +61,7 @@ class ContribuyenteResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ]);
     }
