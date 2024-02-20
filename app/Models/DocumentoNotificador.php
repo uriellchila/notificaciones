@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class DocumentoNotificador extends Model
 {
     use HasFactory, SoftDeletes;
+    
     protected $fillable=[
         'contribuyente_id',
         'tipo_documento_id',

@@ -7,6 +7,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Pages\Auth\EditProfile;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
@@ -19,6 +20,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -45,6 +47,16 @@ class AdminPanelProvider extends PanelProvider
                      ->collapsed('false'),
                 
             ])
+            ->profile(EditProfile::class)
+            //->profile(isSimple: false)
+            ->login()
+            //->registration()
+            //->passwordReset()
+            //->emailVerification()
+            //->profile()
+            ->authGuard('web')
+            //->spa()
+            ->unsavedChangesAlerts()
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -54,7 +66,8 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\FilamentInfoWidget::class,
+                //NotificacionesNoti::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use RelationManagers\DocumentoNotificadorsRelationManager;
 
 class UserResource extends Resource
 {
@@ -26,6 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Roles y Permisos';
     protected static ?string $navigationLabel = 'Usuarios';
     protected static ?int $navigationSort = 21;
+    protected static ?string $modelLabel = 'Usuario';
 
     public static function form(Form $form): Form
     {
@@ -74,6 +76,8 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -85,7 +89,8 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\DocumentoNotificadorsRelationManager::class,
+            
         ];
     }
 
@@ -95,6 +100,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}/view'),
         ];
     }
 }

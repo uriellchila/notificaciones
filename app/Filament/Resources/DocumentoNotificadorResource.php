@@ -25,15 +25,19 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\DocumentoNotificadorResource\Pages;
 use App\Filament\Resources\DocumentoNotificadorResource\RelationManagers;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\Notificaciones;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
 
 class DocumentoNotificadorResource extends Resource
 {
     protected static ?string $model = DocumentoNotificador::class;
-
+    //protected static ?string $title = 'Custom Page Title';
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
     //protected static ?string $navigationGroup = 'Mantenimiento';
     protected static ?string $navigationLabel = 'Notificacion';
     protected static ?int $navigationSort = 1;
+    protected static ?string $modelLabel = 'Notificaciones';
     
     public static function form(Form $form): Form
     {
@@ -78,21 +82,22 @@ class DocumentoNotificadorResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
+    {   
+
+            return $table
             //->heading('Notificaciones')
             //->description('Notificaciones')
             ->striped()
             ->query(DocumentoNotificador::query()->where('user_id',Auth::user()->id))
             ->columns([
                 //TextColumn::make('contribuyente.codigo')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('codigo')->sortable()->toggleable(),
+                TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
                 TextColumn::make('dni')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('domicilio')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('tipo_documento.nombre')->sortable()->toggleable(),
-                TextColumn::make('numero_doc')->sortable()->toggleable(),
-                TextColumn::make('numero_acuse')->sortable()->toggleable(),
+                TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
+                TextColumn::make('numero_acuse')->sortable()->toggleable()->searchable(),
                 TextColumn::make('tipo_notificacion.nombre')->sortable()->toggleable(),
                 TextColumn::make('fecha_notificacion')->sortable()->toggleable(),
                 TextColumn::make('user.name')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true)->label('Notificador'),
@@ -122,8 +127,16 @@ class DocumentoNotificadorResource extends Resource
                     ExportBulkAction::make()
                 ]),
             ]);
+        
     }
-
+    public static function getWidgets(): array
+    {
+        return [
+            Notificaciones::class,
+            NotificacionesNoti::class,
+            //NotificadoresChart::class,
+        ];
+    }
     public static function getPages(): array
     {
         return [

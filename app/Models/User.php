@@ -44,4 +44,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function documento_notificadors(){
+        return $this->hasMany(DocumentoNotificador::class);
+    }
+
 }

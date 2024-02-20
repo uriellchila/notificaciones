@@ -23,6 +23,7 @@ class TipoNotificacionResource extends Resource
     protected static ?string $navigationGroup = 'Mantenimiento';
     protected static ?string $navigationLabel = 'Tipo Notificacion';
     protected static ?int $navigationSort = 3;
+    protected static ?string $modelLabel = 'Tipo Notificaciones';
 
     public static function form(Form $form): Form
     {
