@@ -6,6 +6,8 @@ use App\Models\User;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\DB;
+use App\Models\DocumentoNotificador;
 
 class NotificadoresChart extends ChartWidget
 {
@@ -14,24 +16,24 @@ class NotificadoresChart extends ChartWidget
     protected function getData(): array
     {
         
-            $data = Trend::model(User::class)
-                ->between(
-                    start: now()->startOfYear(),
-                    end: now()->endOfYear(),
-                )
-                ->perMonth()
-                ->count();
-
-            
-            return [
-                'datasets' => [
-                    [
-                        'label' => 'Blog posts',
-                        'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    ],
+        $notis=DocumentoNotificador::select('name')
+        ->join('users', 'users.id', '=', 'documento_notificadors.user_id')
+        ->groupBy('user_id')
+        ->select('name', DB::raw('count(*) as notis'))
+        ->get();
+        
+        
+        $data=[0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89];
+        //dd($data);
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Blog posts created',
+                    'data' => array_column($notis->toArray(), 'notis'),
                 ],
-                'labels' => $data->map(fn (TrendValue $value) => $value->date),
-            ];
+            ],
+            'labels' => array_column($notis->toArray(), 'name'),
+        ];
         
     }
 

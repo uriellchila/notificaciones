@@ -21,6 +21,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesTabla;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -66,8 +68,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                NotificacionesTabla::class,
                 //Widgets\FilamentInfoWidget::class,
                 //NotificacionesNoti::class,
+                NotificadoresChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

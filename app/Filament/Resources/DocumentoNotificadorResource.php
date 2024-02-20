@@ -28,6 +28,7 @@ use App\Filament\Resources\DocumentoNotificadorResource\RelationManagers;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\Notificaciones;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesTabla;
 
 class DocumentoNotificadorResource extends Resource
 {
@@ -134,6 +135,7 @@ class DocumentoNotificadorResource extends Resource
         return [
             Notificaciones::class,
             NotificacionesNoti::class,
+            NotificacionesTabla::class,
             //NotificadoresChart::class,
         ];
     }
