@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->integer('plazo');
+            $table->integer('cantidad');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

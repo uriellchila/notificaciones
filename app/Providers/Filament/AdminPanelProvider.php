@@ -19,10 +19,13 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacion;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesTabla;
+use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacionChart;
+use App\Filament\Resources\DevolucionDocumentoResource\Widgets\DevolucionDocumentosTable;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -68,10 +71,14 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                NotificacionesTabla::class,
-                //Widgets\FilamentInfoWidget::class,
-                //NotificacionesNoti::class,
                 NotificadoresChart::class,
+                TipoNotificacionChart::class,
+                DevolucionDocumentosTable::class,
+                NotificacionesTabla::class,
+                
+                Widgets\FilamentInfoWidget::class,
+                //NotificacionesNoti::class,
+                
             ])
             ->middleware([
                 EncryptCookies::class,

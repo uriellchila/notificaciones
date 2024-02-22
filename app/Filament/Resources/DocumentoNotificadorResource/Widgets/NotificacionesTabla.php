@@ -6,6 +6,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use App\Models\DocumentoNotificador;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Widgets\TableWidget as BaseWidget;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -13,6 +14,8 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class NotificacionesTabla extends BaseWidget
 {   
     protected int | string | array $columnSpan = 'full';
+    protected static ?string $heading = 'Documentos Notificados';
+
     protected static ?int $sort = 2;
     public function table(Table $table): Table
     {
@@ -30,6 +33,7 @@ class NotificacionesTabla extends BaseWidget
                 TextColumn::make('numero_acuse')->sortable()->toggleable()->searchable(),
                 TextColumn::make('tipo_notificacion.nombre')->sortable()->toggleable(),
                 TextColumn::make('fecha_notificacion')->sortable()->toggleable(),
+                ToggleColumn::make('prico')->sortable()->toggleable(),
                 TextColumn::make('user.name')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: false)->label('Notificador'),
             ])
             ->filters([
@@ -51,4 +55,5 @@ class NotificacionesTabla extends BaseWidget
                 //]),
             ]);
     }
+
 }

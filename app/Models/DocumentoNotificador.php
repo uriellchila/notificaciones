@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SubTipoNotificacion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,9 +18,12 @@ class DocumentoNotificador extends Model
         'dni',
         'razon_social',
         'domicilio',
+        'anyo',
         'numero_doc',
+        'cantidad_visitas',
         'numero_acuse',
         'tipo_notificacion_id',
+        'sub_tipo_notificacion_id',
         'fecha_notificacion',
         'observaciones',
         'user_id',
@@ -32,6 +36,9 @@ class DocumentoNotificador extends Model
     }
     public function tipo_notificacion(){
         return $this->belongsTo(TipoNotificacion::class);
+    }
+    public function sub_tipo_notificacion(){
+        return $this->belongsTo(SubTipoNotificacion::class);
     }
     public function user(){
         return $this->belongsTo(User::class);

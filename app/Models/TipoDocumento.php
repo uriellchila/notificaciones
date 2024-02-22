@@ -12,6 +12,7 @@ class TipoDocumento extends Model
     protected $fillable=[
         'nombre',
         'plazo',
+        'cantidad',
     ];
     public function documento_notificadors(): HasMany{
         return $this->hasMany(DocumentoNotificador::class);

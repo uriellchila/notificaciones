@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ContribuyenteSeeder::class);
         $this->call(TipoDocumentoSeeder::class);
         $this->call(TipoNotificacionSeeder::class);
+        $this->call(ElectroRegistroSeeder::class);
+        $this->call(EmsaRegistroSeeder::class);
+        $this->call(MotivoDevolucionSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([

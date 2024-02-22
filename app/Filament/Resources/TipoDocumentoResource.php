@@ -30,6 +30,7 @@ class TipoDocumentoResource extends Resource
             ->schema([
                 TextInput::make('nombre'),
                 TextInput::make('plazo')->numeric(),
+                TextInput::make('cantidad')->numeric(),
             ]);
     }
 
@@ -39,6 +40,7 @@ class TipoDocumentoResource extends Resource
             ->columns([
                 TextColumn::make('nombre'),
                 TextColumn::make('plazo'),
+                TextColumn::make('cantidad'),
             ])
             ->filters([
                 //

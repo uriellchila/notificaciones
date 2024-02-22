@@ -11,7 +11,7 @@ use App\Models\DocumentoNotificador;
 
 class NotificadoresChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Notificaciones - Notificador';
 
     protected function getData(): array
     {
@@ -20,15 +20,16 @@ class NotificadoresChart extends ChartWidget
         ->join('users', 'users.id', '=', 'documento_notificadors.user_id')
         ->groupBy('user_id')
         ->select('name', DB::raw('count(*) as notis'))
+        ->orderBy('user_id','asc')
         ->get();
         
         
-        $data=[0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89];
+        //$data=[0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89];
         //dd($data);
         return [
             'datasets' => [
                 [
-                    'label' => 'Blog posts created',
+                    'label' => 'Notificaciones por Notificador',
                     'data' => array_column($notis->toArray(), 'notis'),
                 ],
             ],
@@ -41,4 +42,5 @@ class NotificadoresChart extends ChartWidget
     {
         return 'bar';
     }
+
 }

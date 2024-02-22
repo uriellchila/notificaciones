@@ -23,16 +23,22 @@ return new class extends Migration
             $table->string('dni');
             $table->string('razon_social');
             $table->string('domicilio');
-            $table->string('numero_doc');
-            $table->string('numero_acuse');
+            $table->integer('anyo');
+            $table->integer('numero_doc');
+            $table->integer('cantidad_visitas');
+            $table->integer('numero_acuse');
             $table->foreignId('tipo_notificacion_id')
                 ->constrainet('tipo_notificacions')
                 ->cascadeOnDelete();
-            $table->date('fecha_notificacion');
+            $table->foreignId('sub_tipo_notificacion_id')
+                ->constrainet('sub_tipo_notificacions')
+                ->cascadeOnDelete()->nullable();
+            $table->date('fecha_notificacion')->nullable();
             $table->string('observaciones')->nullable();
             $table->foreignId('user_id')
                 ->constrainet('users')
                 ->cascadeOnDelete();
+            $table->boolean('prico')->nullable()->default(false);
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

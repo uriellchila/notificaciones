@@ -15,4 +15,7 @@ class TipoNotificacion extends Model
     public function documento_notificadors(): HasMany{
         return $this->hasMany(DocumentoNotificador::class);
     }
+    public function sub_tipo_notificacions(): HasMany{
+        return $this->hasMany(SubTipoNotificacion::class);
+    }
 }

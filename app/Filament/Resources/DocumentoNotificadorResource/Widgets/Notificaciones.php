@@ -46,4 +46,5 @@ class Notificaciones extends BaseWidget
             ->color('warning'),*/
         ];
     }
+
 }

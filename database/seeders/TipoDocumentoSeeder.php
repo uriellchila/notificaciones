@@ -13,7 +13,7 @@ class TipoDocumentoSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('tipo_documentos')->insert(['nombre'=>'Emision Mecanizada (CUPONERA)','plazo'=>15]);
+        DB::table('tipo_documentos')->insert(['nombre'=>'Emision Mecanizada','plazo'=>15,'cantidad'=>0]);
 
 
     }
