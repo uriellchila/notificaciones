@@ -71,10 +71,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                NotificadoresChart::class,
-                TipoNotificacionChart::class,
-                DevolucionDocumentosTable::class,
-                NotificacionesTabla::class,
+                //NotificadoresChart::class,
+                //TipoNotificacionChart::class,
+                //DevolucionDocumentosTable::class,
+                //NotificacionesTabla::class,
                 
                 Widgets\FilamentInfoWidget::class,
                 //NotificacionesNoti::class,
