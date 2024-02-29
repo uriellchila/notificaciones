@@ -20,6 +20,7 @@ class DevolucionDocumento extends Model
         'motivo_devolucion_id',
         'observaciones',
         'user_id',
+        'cantidad_visitas',
 
     ];
     public function documento(){

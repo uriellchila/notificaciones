@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use App\Models\Documento;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\DB;
@@ -39,87 +40,105 @@ class DevolucionDocumentoResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-uturn-left';
 
     public static function form(Form $form): Form
-    {
-        return $form
+    {   return $form
+        ->schema([
+            Grid::make()
+            ->columns(3)
             ->schema([
-                Grid::make()
-                ->columns(2)
-                ->schema([
-                    Select::make('contribuyente_id')
-                        ->relationship('contribuyente', 'codigo')
-                        ->required()->live()->searchable()
+                Select::make('tipo_documento_id')
+                    ->relationship('tipo_documento', 'nombre')
+                    ->live()->preload()->selectablePlaceholder(true)->required()->dehydrated()->visibleOn('create'),
+                Select::make('tipo_documento_id')
+                    ->relationship('tipo_documento', 'nombre')
+                    ->live()->preload()->selectablePlaceholder(true)->required()->dehydrated()->disabled()->hiddenOn('create'),
+                Select::make('documento_id')->label('Numero Documento')
+                    //->relationship('documento', 'numero_doc')->required(),
+                    ->options(function (Get $get) {
+                        return Documento::query()
+                        ->where('tipo_documento_id', $get('tipo_documento_id'))
+                        ->where('user_id', Auth::user()->id)
+                        ->whereNotExists(function($query){$query->select(DB::raw(1))
+                                            ->from('notificacion_documentos as nd')
+                                            ->whereRaw('documentos.id = nd.documento_id')
+                                            ->whereRaw('nd.deleted_at is null');
+                                    })
+                        ->whereNotExists(function($query){$query->select(DB::raw(1))
+                                            ->from('devolucion_documentos as dd')
+                                            ->whereRaw('documentos.id = dd.documento_id');
+                                            //->whereRaw('dd.deleted_at != null');
+                                    })
+                        ->pluck('numero_doc','documentos.id');
+                        })
+                        
+                        ->live()->preload()
                         ->afterStateUpdated(function (Set $set, Get $get){
-                            $data = DB::table('contribuyentes')
-                                //->select('ap_paterno','ap_materno','nombres')
-                                ->where('id',$get('contribuyente_id'))
+                            $data = DB::table('documentos')
+                                ->where('id',$get('documento_id'))                                    
                                 ->get();    
                                 foreach ($data as $p) { 
                                     $set('codigo',$p->codigo);
-                                    $set('dni',$p->dni_ruc);
-                                    $set('razon_social',$p->razon_social);
-                                    $set('domicilio',$p->domicilio);
-                                } 
-                        }),//->optionsLimit(20),                   
-                    Hidden::make('codigo')->required(),
-                    Hidden::make('dni')->required(),
-                    TextInput::make('razon_social')->required()->disabled()->dehydrated(),
-                    Hidden::make('domicilio')->required(),
-                    
+                                  } 
+                        })->searchable()->visibleOn('create'),
+                Select::make('documento_id')->label('Numero Documento')
+                        //->relationship('documento', 'numero_doc')->required(),
+                        ->options(function (Get $get) {
+                            return Documento::query()
+                            ->where('tipo_documento_id', $get('tipo_documento_id'))
+                            ->where('user_id', Auth::user()->id)
+                            ->pluck('numero_doc','documentos.id');
+                            })
+                            
+                            ->live()->preload()
+                            ->afterStateUpdated(function (Set $set, Get $get){
+                                $data = DB::table('documentos')
+                                    ->where('id',$get('documento_id'))                                    
+                                    ->get();    
+                                    foreach ($data as $p) { 
+                                        $set('codigo',$p->codigo);
+                                      } 
+                            })->searchable()->hiddenOn('create')->disabled(),
+                
+                TextInput::make('codigo')->disabled(),
 
-                    ]),
-                Grid::make()
-                ->columns(3)
-                ->schema([
-                    Select::make('tipo_documento_id')
-                        ->relationship('tipo_documento', 'nombre')
-                        ->live()->preload()->selectablePlaceholder(true)->required()->dehydrated(),
-                    TextInput::make('numero_doc')->required()->numeric()->label('Numero Documento'),
-                    TextInput::make('anyo')->required()->label('Periodo')->default(date('Y'))->disabled()->dehydrated(),
-                    
-
-                ]),
-                Grid::make()
-                ->columns(3)
-                ->schema([
-                    TextInput::make('cantidad_visitas')->required()->numeric()->default(1),
-                    Select::make('motivo_devolucion_id')
+            ]),
+            Grid::make()
+            ->columns(3)
+            ->schema([
+                TextInput::make('cantidad_visitas')->required()->numeric()->default(1),
+                Select::make('motivo_devolucion_id')
                         ->relationship('motivo_devolucion', 'nombre')
                         ->required()->live()->preload(),
-                    Toggle::make('prico'),
-                    
-                ]),
-                Grid::make()
-                ->columns(1)
-                ->schema([
-                    
-                    TextInput::make('observaciones'),
-                   
-                    
-                    Hidden::make('user_id')->default(Auth::user()->id),
-
-                ])
-            ]);
+                TextInput::make('observaciones'),
+                
+                Hidden::make('user_id')->default(Auth::user()->id),
+            ])
+        ]);
+        
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->striped()
-            ->query(DevolucionDocumento::query()->where('user_id',Auth::user()->id))
-            ->columns([
-                //TextColumn::make('contribuyente.codigo')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
-                TextColumn::make('dni')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('domicilio')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('tipo_documento.nombre')->sortable()->toggleable(),
-                TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
-                TextColumn::make('cantidad_visitas')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-                TextColumn::make('motivo_devolucion.nombre')->sortable()->toggleable(),
-                ToggleColumn::make('prico')->sortable()->toggleable(),
-                TextColumn::make('user.name')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true)->label('Notificador'),
+        ->striped()
+        ->query(DevolucionDocumento::query()->where('user_id',Auth::user()->id))
+        ->columns([
+            //TextColumn::make('contribuyente.codigo')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('id')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
+            TextColumn::make('tipo_documento.nombre')->sortable()->toggleable()->searchable()->label('Tipo Documento'),
+            TextColumn::make('documento.numero_doc')->sortable()->toggleable()->searchable()->label('Numero Doc.'),
+            TextColumn::make('documento.anyo_doc')->sortable()->toggleable()->searchable()->label('Año Doc.'),
+            TextColumn::make('documento.codigo')->sortable()->toggleable()->toggleable()->label('Codigo'),
+            TextColumn::make('documento.dni')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true)->label('Dni'),
+            TextColumn::make('documento.razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true)->label('Año Doc.'),
+            TextColumn::make('documento.domicilio')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('documento.deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable()->label('Deuda Desde.'),
+            TextColumn::make('documento.deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable()->label('Deuda Hasta.'),
+            TextColumn::make('cantidad_visitas')->sortable()->toggleable()->searchable()->label('N° Visitas'),
+            TextColumn::make('motivo_devolucion.nombre')->sortable()->toggleable(),
+            ToggleColumn::make('documento.prico')->sortable()->toggleable(isToggledHiddenByDefault: true)->label('Prico')->disabled(),
+            TextColumn::make('user.name')->sortable()->toggleable()->toggleable(isToggledHiddenByDefault: true)->label('Notificador'),
 
-            ])
+        ])
             ->filters([
                 SelectFilter::make('tipo_documento')->relationship('tipo_documento', 'nombre'),
                 SelectFilter::make('motivo_devolucion')->relationship('motivo_devolucion', 'nombre'),

@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrainet('users')
                 ->cascadeOnDelete();
-            $table->string('telefono_contacto');
+            $table->string('telefono_contacto')->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

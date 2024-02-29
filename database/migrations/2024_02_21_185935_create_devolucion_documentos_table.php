@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('motivo_devolucion_id')
                 ->constrainet('motivo_devolucions')
                 ->cascadeOnDelete();
+            $table->integer('cantidad_visitas');
             $table->string('observaciones')->nullable();
             $table->foreignId('user_id')
                 ->constrainet('users')

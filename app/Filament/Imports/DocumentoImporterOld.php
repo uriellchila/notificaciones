@@ -20,8 +20,7 @@ class DocumentoImporter extends Importer
                 ->rules(['required', 'integer']),
             ImportColumn::make('numero_doc')
                 ->requiredMapping()
-                ->numeric()
-                ->rules(['required', 'integer']),
+                ->rules(['required', 'max:255']),
             ImportColumn::make('anyo_doc')
                 ->requiredMapping()
                 ->numeric()
@@ -61,10 +60,19 @@ class DocumentoImporter extends Importer
 
     public function resolveRecord(): ?Documento
     {
-        // return Documento::firstOrNew([
-        //     // Update existing records, matching them by `$this->data['column_name']`
-        //     'email' => $this->data['email'],
-        // ]);
+        /*return Documento::firstOrNew([
+            
+             'tipo_documento_id' => $this->data['tipo_documento_id'],
+             'numero_doc' => $this->data['numero_doc'],
+             'anyo_doc' => $this->data['anyo_doc'],
+             'deuda_desde' => $this->data['deuda_desde'],
+             'deuda_hasta' => $this->data['deuda_hasta'],
+             'deuda_ip' => $this->data['deuda_ip'],
+             'codigo' => $this->data['codigo'],
+             'dni' => $this->data['dni'],
+             'razon_social' => $this->data['razon_social'],
+             'domicilio' => $this->data['domicilio'],
+        ]);*/
 
         return new Documento();
     }
@@ -79,4 +87,5 @@ class DocumentoImporter extends Importer
 
         return $body;
     }
+
 }
