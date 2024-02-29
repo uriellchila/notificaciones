@@ -37,11 +37,11 @@ class ElectroRegistroResource extends Resource
             ->striped()
             ->query(ElectroRegistro::query()->orderBy('razon_social', 'asc'))
             ->columns([
-                TextColumn::make('dni')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('razon_social')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('direccion')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('codigo_suministro')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('serie_medidor')->sortable()->toggleable()->searchable(isIndividual: true),
+                TextColumn::make('dni')->sortable()->toggleable()->searchable(),
+                TextColumn::make('razon_social')->sortable()->toggleable()->searchable(),
+                TextColumn::make('direccion')->sortable()->toggleable()->searchable(),
+                TextColumn::make('codigo_suministro')->sortable()->toggleable()->searchable(),
+                TextColumn::make('serie_medidor')->sortable()->toggleable()->searchable(),
             ])
             ->filters([
                 //

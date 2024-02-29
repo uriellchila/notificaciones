@@ -2,23 +2,28 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Models\Documento;
 use App\Models\TipoDocumento;
-use App\Models\MotivoDevolucion;
+use App\Models\TipoNotificacion;
+use App\Models\SubTipoNotificacion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class DevolucionDocumento extends Model
+class NotificacionDocumento extends Model
 {
     use HasFactory, SoftDeletes;
     
     protected $fillable=[
         'documento_id',
         'tipo_documento_id',
-        'motivo_devolucion_id',
+        'cantidad_visitas',
+        'numero_acuse',
+        'tipo_notificacion_id',
+        'sub_tipo_notificacion_id',
+        'fecha_notificacion',
         'observaciones',
+        'telefono_contacto',
         'user_id',
 
     ];
@@ -28,8 +33,11 @@ class DevolucionDocumento extends Model
     public function tipo_documento(){
         return $this->belongsTo(TipoDocumento::class);
     }
-    public function motivo_devolucion(){
-        return $this->belongsTo(MotivoDevolucion::class);
+    public function tipo_notificacion(){
+        return $this->belongsTo(TipoNotificacion::class);
+    }
+    public function sub_tipo_notificacion(){
+        return $this->belongsTo(SubTipoNotificacion::class);
     }
     public function user(){
         return $this->belongsTo(User::class);

@@ -17,6 +17,7 @@ class Documento extends Model
         'deuda_hasta',
         'deuda_ip',
         'codigo',
+        'dni',
         'razon_social',
         'domicilio',
         'user_id',

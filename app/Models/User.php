@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Documento;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,6 +47,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function isAdmin()
+    {
+        //if ($this->role->name == 'Super Admin' /*&& $this->is_active == 1*/) {
+         ///   return true;
+       // }
+       // return false;
+       //dd(Auth::role()->name);
+       //return false;
+       $data = DB::table('model_has_roles')
+                                ->select('roles.name as role_name')
+                                ->join('roles','roles.id','=','model_has_roles.role_id')
+                                ->join('users','users.id','=','model_has_roles.model_id')
+                                ->where('users.id',Auth::user()->id)
+                                ->get();    
+                                foreach ($data as $p) { 
+                                    if ($p->role_name == 'Super Admin' /*&& $this->is_active == 1*/) {
+                                        return true;
+                                     }
+                                    return false;
+                                } 
+    }
     public function documento_notificadors(){
         return $this->hasMany(DocumentoNotificador::class);
     }

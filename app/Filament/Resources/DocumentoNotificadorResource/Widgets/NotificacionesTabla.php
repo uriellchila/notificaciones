@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DocumentoNotificadorResource\Widgets;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Models\DocumentoNotificador;
+use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -54,6 +55,10 @@ class NotificacionesTabla extends BaseWidget
                     //ExportBulkAction::make()
                 //]),
             ]);
+    }
+    public static function canView(): bool
+    {
+        return Auth::user()->isAdmin();
     }
 
 }

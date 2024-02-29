@@ -36,9 +36,9 @@ class EmsaRegistroResource extends Resource
             ->striped()
             ->query(EmsaRegistro::query()->orderBy('razon_social', 'asc'))
             ->columns([
-                TextColumn::make('dni')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('razon_social')->sortable()->toggleable()->searchable(isIndividual: true),
-                TextColumn::make('direccion')->sortable()->toggleable()->searchable(isIndividual: true),
+                TextColumn::make('dni')->sortable()->toggleable()->searchable(),
+                TextColumn::make('razon_social')->sortable()->toggleable()->searchable(),
+                TextColumn::make('direccion')->sortable()->toggleable()->searchable(),
                 TextColumn::make('numero')->sortable()->toggleable()->searchable(isIndividual: true),
             ])
             ->filters([

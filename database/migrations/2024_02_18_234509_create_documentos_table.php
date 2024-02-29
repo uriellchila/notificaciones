@@ -16,12 +16,13 @@ return new class extends Migration
             $table->foreignId('tipo_documento_id')
                 ->constrainet('tipo_documentos')
                 ->cascadeOnDelete();
-            $table->string('numero_doc');
+            $table->integer('numero_doc');
             $table->integer('anyo_doc');
             $table->integer('deuda_desde');
             $table->integer('deuda_hasta');
             $table->double('deuda_ip');
             $table->string('codigo');
+            $table->string('dni');
             $table->string('razon_social');
             $table->string('domicilio'); 
             $table->foreignId('user_id')
