@@ -38,6 +38,12 @@ class UserResource extends Resource
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255),
+                    TextInput::make('dni')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('telefono')
+                        ->required()
+                        ->maxLength(255),
                     TextInput::make('email')
                         ->label('Email Address')
                         ->required()
@@ -68,6 +74,8 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('name')->sortable()->searchable(),
+                TextColumn::make('dni')->sortable()->searchable(),
+                TextColumn::make('telefono')->sortable()->searchable(),
                 TextColumn::make('email')->sortable()->searchable(),
                 TextColumn::make('created_at')->dateTime('d-M-y')
             ])

@@ -12,12 +12,15 @@ use App\Models\Documento;
 use Filament\Tables\Table;
 use App\Models\Contribuyente;
 use Tables\Actions\BulkAction;
+use App\Models\MotivoDevolucion;
 use App\Models\TipoNotificacion;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\DB;
+use App\Models\DevolucionDocumento;
 use App\Models\SubTipoNotificacion;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Facades\Auth;
+use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -38,6 +41,9 @@ class DocumentoResource extends Resource
     protected static ?string $model = Documento::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Doc. Pendientes';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $modelLabel = 'Documentos Pendientes';
 
     public static function form(Form $form): Form
     {
@@ -102,8 +108,18 @@ class DocumentoResource extends Resource
     {
         return $table
         ->striped()
-        ->heading('Asignados para notificar.')
-        ->query(Documento::query()->where('user_id',Auth::user()->id))
+        ->heading('Asignados para notificar como notificador.')
+        ->query(Documento::query()->where('user_id',Auth::user()->id)->whereNotExists(function($query){$query->select(DB::raw(1))
+            ->from('notificacion_documentos as nd')
+            ->whereRaw('documentos.id = nd.documento_id')
+            ->whereRaw('nd.deleted_at is null');
+        })
+    ->whereNotExists(function($query){$query->select(DB::raw(1))
+                ->from('devolucion_documentos as dd')
+                ->whereRaw('documentos.id = dd.documento_id')
+                ->whereRaw('dd.deleted_at is null');
+                //->whereRaw('dd.deleted_at != null');
+        }))
         ->columns([
             TextColumn::make('tipo_documento.nombre')->sortable()->toggleable()->searchable(),
             TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
@@ -114,8 +130,8 @@ class DocumentoResource extends Resource
             TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
             TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
             TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador')->searchable(),
-        ])
+            TextColumn::make('user.name')->sortable()->toggleable(isToggledHiddenByDefault: true)->label('notificador')->searchable(),
+        ])->deferLoading()
         ->filters([
             //
         ])
@@ -131,8 +147,7 @@ class DocumentoResource extends Resource
                         TextInput::make('documento_id')->label('')
                             ->default(function (Documento $record) {
                                 return "Numero Documento: ".$record->numero_doc." - ".$record->anyo_doc."  Razon social: ".$record->razon_social;})->disabled()                             
-    
-                    ]),
+                      ]),
                     Grid::make()
                     ->columns(3)
                     ->schema([
@@ -144,7 +159,6 @@ class DocumentoResource extends Resource
                                 ->pluck('nombre', 'id');
                             })
                             ->required()->live()->preload(),
-                        
                     ]),
                     Grid::make()
                     ->columns(3)
@@ -159,35 +173,73 @@ class DocumentoResource extends Resource
                             ->visible(
                                 function(Get $get){
                                     if (SubTipoNotificacion::query()->where('tipo_notificacion_id', $get('tipo_notificacion_id'))->count()>0)
-                                     {
-                                        
-                                        return true;
-                                        
-                                    } else {
-                                        return false;
-                                    }
+                                     {return true;} 
+                                     else {return false;}
                                 }
                             ),
-                        DatePicker::make('fecha_notificacion')->required(),
+                        DatePicker::make('fecha_notificacion')->required()->default(date("Y-m-d")),
                         TextInput::make('telefono_contacto'),
                     ]),
                     Grid::make()
                     ->columns(1)
                     ->schema([
-                        
                         TextInput::make('observaciones'),
-                        
                         Hidden::make('user_id')->default(Auth::user()->id),
                     ])
             ])
             ->action(function (array $data, Documento $record): void {
-                dd($record);
-                $doc = new Flight;
- 
-                $doc->name = $request->name;
-         
+                $doc = new NotificacionDocumento;
+                $doc->documento_id = $record->id;
+                $doc->tipo_documento_id = $record->tipo_documento_id;
+                $doc->cantidad_visitas = $data['cantidad_visitas'];
+                $doc->numero_acuse = $data['numero_acuse'];
+                $doc->tipo_notificacion_id = $data['tipo_notificacion_id'];
+                if (SubTipoNotificacion::query()->where('tipo_notificacion_id', $record->tipo_documento_id)->count()>0)
+                    {$doc->sub_tipo_notificacion_id = $data['sub_tipo_notificacion_id'];
+                    } 
+                $doc->fecha_notificacion = $data['fecha_notificacion'];
+                $doc->observaciones = $data['observaciones'];
+                $doc->user_id = Auth::user()->id;
                 $doc->save();
-            })
+            })->icon('heroicon-o-clipboard-document-check'),
+     
+        Tables\Actions\Action::make('Devolver')
+            ->form([
+                    Grid::make()
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('documento_id')->label('')
+                            ->default(function (Documento $record) {
+                                return "Numero Documento: ".$record->numero_doc." - ".$record->anyo_doc."  Razon social: ".$record->razon_social;})->disabled()                             
+                      ]),
+                    Grid::make()
+                    ->columns(3)
+                    ->schema([
+                        TextInput::make('cantidad_visitas')->required()->numeric()->default(0),
+                        Select::make('motivo_devolucion_id')
+                            ->options(function () {
+                                return MotivoDevolucion::query()
+                                ->pluck('nombre', 'id');
+                            })
+                            ->required()->live()->preload()->default(0),
+                    ]),
+                    Grid::make()
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('observaciones'),
+                        Hidden::make('user_id')->default(Auth::user()->id),
+                    ])
+            ])
+            ->action(function (array $data, Documento $record): void {
+                $doc = new DevolucionDocumento;
+                $doc->documento_id = $record->id;
+                $doc->tipo_documento_id = $record->tipo_documento_id;
+                $doc->cantidad_visitas = $data['cantidad_visitas'];
+                $doc->motivo_devolucion_id = $data['motivo_devolucion_id'];
+                $doc->observaciones = $data['observaciones'];
+                $doc->user_id = Auth::user()->id;
+                $doc->save();
+            })->icon('heroicon-o-arrow-uturn-left')
         ])
         ->headerActions([
             // ...
@@ -198,8 +250,7 @@ class DocumentoResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
 
             ]),*/
-            Tables\Actions\BulkAction::make('Asignar Notificador')
-            //->accessSelectedRecords()
+            /*Tables\Actions\BulkAction::make('Asignar Notificador')
             ->action(function (array $data,Documento $record, Collection $records) {
                 $records->each(
                     fn (Documento $record) => $record->update([
@@ -212,7 +263,7 @@ class DocumentoResource extends Resource
                     ->label('Notificador')
                     ->options(User::query()->pluck('name', 'id')),
                     //->required(),
-            ])
+            ])*/
                 //->action(fn (Collection $records) => $records->each->update())
         ]);
     }

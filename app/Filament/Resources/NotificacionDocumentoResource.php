@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\Facades\DB;
 use App\Models\SubTipoNotificacion;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Hidden;
@@ -25,6 +26,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\NotificacionDocumentoResource\Pages;
 use App\Filament\Resources\NotificacionDocumentoResource\RelationManagers;
 
@@ -32,7 +34,10 @@ class NotificacionDocumentoResource extends Resource
 {
     protected static ?string $model = NotificacionDocumento::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationLabel = 'Doc. Notificados';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $modelLabel = 'Documentos Notificados';
 
     public static function form(Form $form): Form
     {
@@ -60,7 +65,8 @@ class NotificacionDocumentoResource extends Resource
                                         })
                             ->whereNotExists(function($query){$query->select(DB::raw(1))
                                                 ->from('devolucion_documentos as dd')
-                                                ->whereRaw('documentos.id = dd.documento_id');
+                                                ->whereRaw('documentos.id = dd.documento_id')
+                                                ->whereRaw('dd.deleted_at is null');
                                                 //->whereRaw('dd.deleted_at != null');
                                         })
                             ->pluck('numero_doc','documentos.id');
@@ -172,6 +178,22 @@ class NotificacionDocumentoResource extends Resource
             ->filters([
                 SelectFilter::make('tipo_documento')->relationship('tipo_documento', 'nombre'),
                 SelectFilter::make('tipo_notificacion')->relationship('tipo_notificacion', 'nombre'),
+                Filter::make('fecha_notificacion')
+                ->form([
+                    DatePicker::make('fecha_inicio'),
+                    DatePicker::make('fecha_fin'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['fecha_inicio'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_notificacion', '>=', $date),
+                        )
+                        ->when(
+                            $data['fecha_fin'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_notificacion', '<=', $date),
+                        );
+                })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -182,6 +204,7 @@ class NotificacionDocumentoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                ExportBulkAction::make()->label('Exportar a Excel')
             ]);
     }
 

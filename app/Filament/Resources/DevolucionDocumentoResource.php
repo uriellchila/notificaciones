@@ -38,9 +38,13 @@ class DevolucionDocumentoResource extends Resource
     protected static ?string $model = DevolucionDocumento::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-uturn-left';
+    protected static ?string $navigationLabel = 'Doc. Devueltos';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $modelLabel = 'Documentos Devueltos';
 
     public static function form(Form $form): Form
     {   return $form
+        //->description('Settings for publishing this post.')
         ->schema([
             Grid::make()
             ->columns(3)
@@ -64,7 +68,8 @@ class DevolucionDocumentoResource extends Resource
                                     })
                         ->whereNotExists(function($query){$query->select(DB::raw(1))
                                             ->from('devolucion_documentos as dd')
-                                            ->whereRaw('documentos.id = dd.documento_id');
+                                            ->whereRaw('documentos.id = dd.documento_id')
+                                            ->whereRaw('dd.deleted_at is null');
                                             //->whereRaw('dd.deleted_at != null');
                                     })
                         ->pluck('numero_doc','documentos.id');
@@ -150,8 +155,9 @@ class DevolucionDocumentoResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    ExportBulkAction::make()
+                    
                 ]),
+                ExportBulkAction::make()->label('Exportar a Excel')
             ]);
     }
 

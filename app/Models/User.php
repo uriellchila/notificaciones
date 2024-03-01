@@ -24,6 +24,8 @@ class User extends Authenticatable
     protected $guarded = [];
     protected $fillable = [
         'name',
+        'dni',
+        'telefono',
         'email',
         'password',
     ];
@@ -62,7 +64,28 @@ class User extends Authenticatable
                                 ->where('users.id',Auth::user()->id)
                                 ->get();    
                                 foreach ($data as $p) { 
-                                    if ($p->role_name == 'Super Admin' /*&& $this->is_active == 1*/) {
+                                    if ($p->role_name == 'Super Admin' || $p->role_name == 'Admin' || $p->role_name == 'Supervisor' /*&& $this->is_active == 1*/) {
+                                        return true;
+                                     }
+                                    return false;
+                                } 
+    }
+    public function isSupervisor()
+    {
+        //if ($this->role->name == 'Super Admin' /*&& $this->is_active == 1*/) {
+         ///   return true;
+       // }
+       // return false;
+       //dd(Auth::role()->name);
+       //return false;
+       $data = DB::table('model_has_roles')
+                                ->select('roles.name as role_name')
+                                ->join('roles','roles.id','=','model_has_roles.role_id')
+                                ->join('users','users.id','=','model_has_roles.model_id')
+                                ->where('users.id',Auth::user()->id)
+                                ->get();    
+                                foreach ($data as $p) { 
+                                    if ($p->role_name == 'Supervisor' /*&& $this->is_active == 1*/) {
                                         return true;
                                      }
                                     return false;

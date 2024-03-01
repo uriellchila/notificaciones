@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use App\Filament\Resources\DocumentoResource;
 use App\Filament\Resources\DocumentoResource\Widgets\DocumentosAsignarTable;
+use App\Filament\Resources\DocumentoResource\Widgets\DocumentosAsignadosTable;
 
 class ManageDocumentos extends ManageRecords
 {
@@ -14,13 +15,14 @@ class ManageDocumentos extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+           // Actions\CreateAction::make(),
         ];
     }
     protected function getHeaderWidgets(): array
     {
         return [
             DocumentosAsignarTable::class,
+            DocumentosAsignadosTable::class,
             //NotificadoresChart::class,
         ];
     }

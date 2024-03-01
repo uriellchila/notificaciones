@@ -6,28 +6,24 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Documento;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\DB;
+use Tables\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
-
-use Filament\Tables\Actions\ImportAction;
-use App\Filament\Imports\DocumentoImporter;
-use Illuminate\Database\Eloquent\Collection;
 use Filament\Widgets\TableWidget as BaseWidget;
 
-class DocumentosAsignarTable extends BaseWidget
-{
-    protected int | string | array $columnSpan = 'full';
-    protected static ?string $heading = 'Pendientes para asignar a un notificador.';
+class DocumentosAsignadosTable extends BaseWidget
+{   protected int | string | array $columnSpan = 'full';
+    protected static ?string $heading = 'Asignados para su notificacion.';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
     protected static ?string $pollingInterval = '3s';
     public function table(Table $table): Table
-    {
+    {   
         return $table
         ->striped()
-        ->query(Documento::query()->where('user_id','=',null))
+        ->query(Documento::query()->where('user_id','!=',null))
         ->columns([
             TextColumn::make('tipo_documento.nombre')->sortable()->toggleable()->searchable(),
             TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
@@ -40,7 +36,6 @@ class DocumentosAsignarTable extends BaseWidget
             TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
             TextColumn::make('user.name')->sortable()->toggleable()->label('notificador')->searchable(),
         ])->deferLoading()
-        
         ->filters([
             //
         ])
@@ -48,7 +43,7 @@ class DocumentosAsignarTable extends BaseWidget
    
         ->actions([
             //Tables\Actions\EditAction::make(),
-            Tables\Actions\Action::make('Asignar')
+            Tables\Actions\Action::make('Cambiar Notificador')
             ->form([
                 Select::make('user_id')
                     ->label('Asignar Notificador')
@@ -58,26 +53,15 @@ class DocumentosAsignarTable extends BaseWidget
             ->action(function (array $data, Documento $record): void {
                 $record->user()->associate($data['user_id']);
                 $record->save();
+                $this->resetTable();
             })
             ->icon('heroicon-o-user')
-            //->visible(false)
+
         ])
         ->headerActions([
-            // ...
-            //Tables\Actions\AttachAction::make(),
-            Tables\Actions\ImportAction::make()
-            ->importer(DocumentoImporter::class)
-            ->options([
-                'updateExisting' => true,
-            ])
         ])
         ->bulkActions([
-            //Tables\Actions\BulkActionGroup::make([
-                //Tables\Actions\DeleteBulkAction::make(),
-
-           // ]),
-            Tables\Actions\BulkAction::make('Asignar Notificador')
-            //->accessSelectedRecords()
+            /*Tables\Actions\BulkAction::make('Asignar Notificador')
             ->action(function (array $data,Documento $record, Collection $records) {
                 $records->each(
                     fn (Documento $record) => $record->update([
@@ -89,10 +73,11 @@ class DocumentosAsignarTable extends BaseWidget
                 Select::make('user_id')
                     ->label('Notificador')
                     ->options(User::query()->pluck('name', 'id')),
-                    //->required(),
-            ])
-                //->action(fn (Collection $records) => $records->each->update())
+                    
+            ])*/
+                
         ]);
+
     }
     public static function getPages(): array
     {
@@ -104,5 +89,4 @@ class DocumentosAsignarTable extends BaseWidget
     {
         return Auth::user()->isAdmin();
     }
-
 }
