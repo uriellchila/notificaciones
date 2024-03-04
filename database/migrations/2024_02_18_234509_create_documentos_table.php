@@ -28,6 +28,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrainet('users')
                 ->cascadeOnDelete()->nullable();
+            $table->date('fecha_para')->nullable();
             $table->boolean('prico')->nullable()->default(false);         
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();

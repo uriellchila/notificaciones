@@ -23,6 +23,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Resources\DocumentoResource\Widgets\TipoNotificacionChart;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacion;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
@@ -30,7 +31,7 @@ use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresCha
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesTabla;
 use App\Filament\Resources\DocumentoResource\Widgets\EstadisticaNotificadorOverview;
 use App\Filament\Resources\DocumentoResource\Widgets\NotificacionDocumentosOverview;
-use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacionChart;
+use App\Filament\Resources\DocumentoResource\Widgets\NotificacionesNotificadorChart;
 use App\Filament\Resources\DevolucionDocumentoResource\Widgets\DevolucionDocumentosTable;
 
 class AdminPanelProvider extends PanelProvider
@@ -60,12 +61,12 @@ class AdminPanelProvider extends PanelProvider
                 
                 
             ])
-            ->navigationItems([
+            /*->navigationItems([
                 NavigationItem::make()
                     ->label('Asignar')
                     ->visible(fn(): bool => Auth::user()->can('view-analytics'))
                     ->icon('heroicon-o-presentation-chart-line'),
-            ])
+            ])*/
             ->sidebarCollapsibleOnDesktop()
             ->sidebarFullyCollapsibleOnDesktop()
             ->topbar(true)
@@ -94,7 +95,8 @@ class AdminPanelProvider extends PanelProvider
                 NotificacionDocumentosOverview::class,
                
                 //NotificadoresChart::class,
-                //TipoNotificacionChart::class,
+                TipoNotificacionChart::class,
+                NotificacionesNotificadorChart::class,
                 //DevolucionDocumentosTable::class,
                 //NotificacionesTabla::class,
                 

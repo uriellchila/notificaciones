@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\ImportAction;
+use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Imports\DocumentoImporter;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -29,37 +31,39 @@ class DocumentosAsignarTable extends BaseWidget
         ->striped()
         ->query(Documento::query()->where('user_id','=',null))
         ->columns([
-            TextColumn::make('tipo_documento.nombre')->sortable()->toggleable()->searchable(),
+            TextColumn::make('tipo_documento.nombre')->sortable()->toggleable(),
             TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
-            TextColumn::make('anyo_doc')->sortable()->toggleable()->searchable(),
-            TextColumn::make('deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('deuda_ip')->sortable()->toggleable()->searchable(),
+            TextColumn::make('anyo_doc')->sortable()->toggleable(),
+            TextColumn::make('deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('deuda_ip')->sortable()->toggleable(),
             TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
             TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
             TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador')->searchable(),
+            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador'),
         ])->deferLoading()
         
         ->filters([
-            //
+            SelectFilter::make('user')->relationship('user', 'name'),
         ])
         ->selectable()
    
         ->actions([
             //Tables\Actions\EditAction::make(),
-            Tables\Actions\Action::make('Asignar')
+            /*Tables\Actions\Action::make('Asignar')
             ->form([
                 Select::make('user_id')
                     ->label('Asignar Notificador')
                     ->options(User::query()->pluck('name', 'id')),
                     //->required(),
-            ])
-            ->action(function (array $data, Documento $record): void {
+                DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
+            
+            /*->action(function (array $data, Documento $record): void {
                 $record->user()->associate($data['user_id']);
                 $record->save();
             })
-            ->icon('heroicon-o-user')
+            
+            ->icon('heroicon-o-user')*/
             //->visible(false)
         ])
         ->headerActions([
@@ -82,6 +86,7 @@ class DocumentosAsignarTable extends BaseWidget
                 $records->each(
                     fn (Documento $record) => $record->update([
                         'user_id' => $data['user_id'],
+                        'fecha_para' => $data['fecha_para'],
                     ]),
                 );
             })
@@ -90,6 +95,7 @@ class DocumentosAsignarTable extends BaseWidget
                     ->label('Notificador')
                     ->options(User::query()->pluck('name', 'id')),
                     //->required(),
+                DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
             ])
                 //->action(fn (Collection $records) => $records->each->update())
         ]);

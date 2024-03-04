@@ -21,6 +21,7 @@ class Documento extends Model
         'razon_social',
         'domicilio',
         'user_id',
+        'fecha_para',
         'prico',
     ];
 

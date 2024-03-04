@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Widgets\TableWidget as BaseWidget;
 
 class DocumentosAsignadosTable extends BaseWidget
@@ -37,7 +38,7 @@ class DocumentosAsignadosTable extends BaseWidget
             TextColumn::make('user.name')->sortable()->toggleable()->label('notificador')->searchable(),
         ])->deferLoading()
         ->filters([
-            //
+            SelectFilter::make('user')->relationship('user', 'name'),
         ])
         ->selectable()
    
