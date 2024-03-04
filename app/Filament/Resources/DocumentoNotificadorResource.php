@@ -190,4 +190,8 @@ class DocumentoNotificadorResource extends Resource
             'index' => Pages\ManageDocumentoNotificadors::route('/'),
         ];
     }
+    public static function shouldRegisterNavigation(): bool
+{
+    return false;
+}
 }

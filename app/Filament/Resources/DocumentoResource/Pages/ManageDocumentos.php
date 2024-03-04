@@ -11,7 +11,7 @@ use App\Filament\Resources\DocumentoResource\Widgets\DocumentosAsignadosTable;
 class ManageDocumentos extends ManageRecords
 {
     protected static string $resource = DocumentoResource::class;
-
+    protected static string $routePath = 'finance';
     protected function getHeaderActions(): array
     {
         return [

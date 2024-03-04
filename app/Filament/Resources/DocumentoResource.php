@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use App\Models\Documento;
 use Filament\Tables\Table;
 use App\Models\Contribuyente;
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\DocumentoResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DocumentoResource\RelationManagers;
+use App\Filament\Resources\DocumentoResource\Pages\AsignarDocumentos;
 
 class DocumentoResource extends Resource
 {
@@ -274,4 +276,11 @@ class DocumentoResource extends Resource
             'index' => Pages\ManageDocumentos::route('/'),
         ];
     }
+    /*public static function getRecordSubNavigation(Page $page): array
+    {
+    return $page->generateNavigationItems([
+        // ...
+        Pages\AsignarDocumentos::class,
+    ]);
+    }*/
 }

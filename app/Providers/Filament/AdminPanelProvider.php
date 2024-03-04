@@ -6,10 +6,14 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use Pages\AsignarDocumentos;
 use Filament\Support\Colors\Color;
 use Filament\Pages\Auth\EditProfile;
+use Illuminate\Support\Facades\Auth;
+use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Navigation\NavigationBuilder;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -24,6 +28,8 @@ use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugi
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesTabla;
+use App\Filament\Resources\DocumentoResource\Widgets\EstadisticaNotificadorOverview;
+use App\Filament\Resources\DocumentoResource\Widgets\NotificacionDocumentosOverview;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacionChart;
 use App\Filament\Resources\DevolucionDocumentoResource\Widgets\DevolucionDocumentosTable;
 
@@ -46,12 +52,23 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Mantenimiento')
                      ->label('mantenimiento'),
-
+                /*NavigationGroup::make('asignardocumento')
+                     ->label('mantenimientossss'),*/
                 NavigationGroup::make()
                      ->label('Roles y Permisos')
                      ->collapsed('false'),
                 
+                
             ])
+            ->navigationItems([
+                NavigationItem::make()
+                    ->label('Asignar')
+                    ->visible(fn(): bool => Auth::user()->can('view-analytics'))
+                    ->icon('heroicon-o-presentation-chart-line'),
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->topbar(true)
             ->profile(EditProfile::class)
             //->profile(isSimple: false)
             ->login()
@@ -67,10 +84,15 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                //Pages\AsignarDocumentos::class,
             ])
+            //->path('app')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                EstadisticaNotificadorOverview::class,
+                NotificacionDocumentosOverview::class,
+               
                 //NotificadoresChart::class,
                 //TipoNotificacionChart::class,
                 //DevolucionDocumentosTable::class,
