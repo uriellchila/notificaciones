@@ -64,4 +64,8 @@ class NotificacionDocumentosOverview extends BaseWidget
             ->color('warning'),*/
         ];
     }
+    /*public static function canView(): bool
+    {
+        return Auth::user()->isNotificador();
+    }*/
 }

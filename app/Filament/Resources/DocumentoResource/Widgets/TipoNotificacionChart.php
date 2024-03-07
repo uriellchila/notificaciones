@@ -42,8 +42,8 @@ class TipoNotificacionChart extends ChartWidget
     {
         return 'bar';
     }
-    public static function canView(): bool
+    /*public static function canView(): bool
     {
         return Auth::user()->isAdmin();
-    }
+    }*/
 }

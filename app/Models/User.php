@@ -70,7 +70,7 @@ class User extends Authenticatable
                                     return false;
                                 } 
     }
-    public function isSupervisor()
+    public function isNotificador()
     {
         //if ($this->role->name == 'Super Admin' /*&& $this->is_active == 1*/) {
          ///   return true;
@@ -85,7 +85,7 @@ class User extends Authenticatable
                                 ->where('users.id',Auth::user()->id)
                                 ->get();    
                                 foreach ($data as $p) { 
-                                    if ($p->role_name == 'Supervisor' /*&& $this->is_active == 1*/) {
+                                    if ($p->role_name == 'Notificador' /*&& $this->is_active == 1*/) {
                                         return true;
                                      }
                                     return false;

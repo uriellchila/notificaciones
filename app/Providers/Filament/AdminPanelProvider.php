@@ -25,6 +25,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\DocumentoResource\Widgets\TipoNotificacionChart;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacion;
+use App\Filament\Resources\DocumentoResource\Widgets\RankinNotificadoresOverview;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificacionesNoti;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\NotificadoresChart;
@@ -95,6 +96,7 @@ class AdminPanelProvider extends PanelProvider
                 NotificacionDocumentosOverview::class,
                
                 //NotificadoresChart::class,
+                RankinNotificadoresOverview::class,
                 TipoNotificacionChart::class,
                 NotificacionesNotificadorChart::class,
                 //DevolucionDocumentosTable::class,

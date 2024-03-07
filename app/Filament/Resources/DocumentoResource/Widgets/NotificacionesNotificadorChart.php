@@ -14,11 +14,11 @@ class NotificacionesNotificadorChart extends ChartWidget
     protected function getData(): array
     {
         
-        $notis=NotificacionDocumento::select('name')
+        $notis=NotificacionDocumento::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), DB::raw('count(*) as notis'))
         ->join('users', 'users.id', '=', 'notificacion_documentos.user_id')
         ->groupBy('user_id', 'name')
-        ->select('name', DB::raw('count(*) as notis'))
-        ->orderBy('user_id','asc')
+        ->orderBy('notis','desc')
+        ->where('notificacion_documentos.deleted_at',null)
         ->get();
         
         
@@ -31,7 +31,7 @@ class NotificacionesNotificadorChart extends ChartWidget
                     'data' => array_column($notis->toArray(), 'notis'),
                 ],
             ],
-            'labels' => array_column($notis->toArray(), 'name'),
+            'labels' => array_column($notis->toArray(), 'nombre'),
         ];
         
     }
@@ -41,9 +41,9 @@ class NotificacionesNotificadorChart extends ChartWidget
     {
         return 'bar';
     }
-    public static function canView(): bool
+    /*public static function canView(): bool
     {
         return Auth::user()->isAdmin();
-    }
+    }*/
 
 }
