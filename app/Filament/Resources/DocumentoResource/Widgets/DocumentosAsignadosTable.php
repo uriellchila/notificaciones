@@ -7,12 +7,15 @@ use Filament\Tables;
 use App\Models\Documento;
 use Filament\Tables\Table;
 use Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class DocumentosAsignadosTable extends BaseWidget
 {   protected int | string | array $columnSpan = 'full';
@@ -39,6 +42,23 @@ class DocumentosAsignadosTable extends BaseWidget
         ])->deferLoading()
         ->filters([
             SelectFilter::make('user')->relationship('user', 'name'),
+            Filter::make('fecha_para_notificar')
+                ->label('Fecha de Asignacion')
+                ->form([
+                    DatePicker::make('fecha_inicio'),
+                    DatePicker::make('fecha_fin'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['fecha_inicio'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_para', '>=', $date),
+                        )
+                        ->when(
+                            $data['fecha_fin'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_para', '<=', $date),
+                        );
+                })
         ])
         ->selectable()
    

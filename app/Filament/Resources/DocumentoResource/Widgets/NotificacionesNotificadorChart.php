@@ -16,7 +16,7 @@ class NotificacionesNotificadorChart extends ChartWidget
         
         $notis=NotificacionDocumento::select('name')
         ->join('users', 'users.id', '=', 'notificacion_documentos.user_id')
-        ->groupBy('user_id')
+        ->groupBy('user_id', 'name')
         ->select('name', DB::raw('count(*) as notis'))
         ->orderBy('user_id','asc')
         ->get();

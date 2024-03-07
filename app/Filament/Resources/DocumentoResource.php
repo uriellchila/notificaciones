@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\DevolucionDocumento;
 use App\Models\SubTipoNotificacion;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NotificacionDocumento;
 use Filament\Forms\Components\Hidden;
@@ -27,13 +28,14 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\AttachAction;
-use Illuminate\Database\Eloquent\Builder;
 use RelationManagers\UserRelationManager;
 use RelationManagers\UsersRelationManager;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\DocumentoResource\Pages;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DocumentoResource\RelationManagers;
 use App\Filament\Resources\DocumentoResource\Pages\AsignarDocumentos;
@@ -135,7 +137,23 @@ class DocumentoResource extends Resource
             TextColumn::make('user.name')->sortable()->toggleable(isToggledHiddenByDefault: true)->label('notificador')->searchable(),
         ])->deferLoading()
         ->filters([
-            //
+            Filter::make('fecha_para_notificar')
+                ->label('Fecha de Asignacion')
+                ->form([
+                    DatePicker::make('fecha_inicio'),
+                    DatePicker::make('fecha_fin'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['fecha_inicio'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_para', '>=', $date),
+                        )
+                        ->when(
+                            $data['fecha_fin'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('fecha_para', '<=', $date),
+                        );
+                })
         ])
         ->selectable()
    
