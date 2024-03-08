@@ -17,44 +17,21 @@ class NotiTipoNotificacionChart extends ChartWidget
     protected function getData(): array
     {
         
-        $notisrecepcion=User::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), 
-        DB::raw('(select count(*) from documentos where user_id=id) as notis')
+        $notificaciones=User::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), 
+        DB::raw('(select count(*) from notificacion_documentos where user_id=users.id and tipo_notificacion_id = 1 and deleted_at is null) as recepcionados'),
+        DB::raw('(select count(*) from notificacion_documentos where user_id=users.id and tipo_notificacion_id = 2 and deleted_at is null) as cedulon'),
+        DB::raw('(select count(*) from notificacion_documentos where user_id=users.id and tipo_notificacion_id = 3 and deleted_at is null) as correo'),
+        DB::raw('(select count(*) from notificacion_documentos where user_id=users.id and tipo_notificacion_id = 4 and deleted_at is null) as negativa')
         )
-        /*->whereExists(function (Builder $query) {
+        ->whereExists(function (Builder $query) {
             $query->select(DB::raw(1))
                   ->from('documentos')
                   ->whereColumn('documentos.user_id', 'users.id');
-        })*/
-        /*->join('users', 'users.id', '=', 'notificacion_documentos.user_id')
-        ->groupBy('user_id', 'name')
-        ->orderBy('user_id','asc')
-        ->where('notificacion_documentos.deleted_at',null)
-        ->where('notificacion_documentos.tipo_notificacion_id',1)*/
-        ->get();
-        dd($notisrecepcion);
-
-        /*$notiscedulon=NotificacionDocumento::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), DB::raw('count(*) as notis'))
-        ->join('users', 'users.id', '=', 'notificacion_documentos.user_id')
-        ->groupBy('user_id', 'name')
-        ->orderBy('user_id','asc')
-        ->where('notificacion_documentos.deleted_at',null)
-        ->where('notificacion_documentos.tipo_notificacion_id',2)
-        ->get();
-
-        $notisnegatividad=NotificacionDocumento::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), DB::raw('count(*) as notis'))
-        ->join('users', 'users.id', '=', 'notificacion_documentos.user_id')
-        ->groupBy('user_id', 'name')
-        ->orderBy('user_id','asc')
-       ->where('notificacion_documentos.deleted_at',null)
-        ->where('notificacion_documentos.tipo_notificacion_id',4)
-        ->get();*/
+        })
         
-        /*$asignados=Documento::select(DB::raw("SPLIT_PART(name, ' ', 1) as nombre"), DB::raw('count(*) as notis'))
-        ->join('users', 'users.id', '=', 'documentos.user_id')
-        ->groupBy('user_id', 'name')
-        ->orderBy('user_id','asc')
-        ->where('documentos.deleted_at',null)
-        ->get();  */
+        ->groupBy('users.id', 'name')
+        ->orderBy('recepcionados','desc')
+        ->get();
         
         //$data=[0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89];
         //dd($data);
@@ -63,30 +40,30 @@ class NotiTipoNotificacionChart extends ChartWidget
                 
                 [
                     'label' => 'C.A. Recepcion',
-                    'data' => array_column($notisrecepcion->toArray(), 'notis'),
+                    'data' => array_column($notificaciones->toArray(), 'recepcionados'),
                     'borderColor' => '#16A085',
-                    'backgroundColor' => '#45B39D',
+                    'backgroundColor' => '#A3E4D7',
 
                     
                 ],
-               /* [
+               [
                     'label' => 'Cedulon',
-                    'data' => array_column($notiscedulon->toArray(), 'notis'),
+                    'data' => array_column($notificaciones->toArray(), 'cedulon'),
                     'borderColor' => '#BA4A00',
-                    'backgroundColor' => '#EB984E',
+                    'backgroundColor' => '#EDBB99',
 
                     
                 ],
                 [
                     'label' => 'Negatividad',
-                    'data' => array_column($notisnegatividad->toArray(), 'notis'),
-                    'backgroundColor' => '#5D6D7E',
+                    'data' => array_column($notificaciones->toArray(), 'negativa'),
+                    'backgroundColor' => '#85929E',
                     'borderColor' => '#2E4053',
                     
-                ],*/
+                ],
                 
             ],
-            'labels' => array_column($notisrecepcion->toArray(), 'nombre'),
+            'labels' => array_column($notificaciones->toArray(), 'nombre'),
             
         ];
         
