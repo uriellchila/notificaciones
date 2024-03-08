@@ -9,7 +9,7 @@ use App\Models\NotificacionDocumento;
 
 class AvanceNotificacionesChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Asiganados - Notificados';
 
     protected function getData(): array
     {
@@ -36,13 +36,14 @@ class AvanceNotificacionesChart extends ChartWidget
                 [
                     'label' => 'Asignados',
                     'data' => array_column($asignados->toArray(), 'notis'),
+                    'backgroundColor' => '#2874A6',
                     'borderColor' => '#2874A6',
                     
                 ],
                 [
                     'label' => 'Notificados',
                     'data' => array_column($notis->toArray(), 'notis'),
-                    //'backgroundColor' => '#FDEDEC',
+                    'backgroundColor' => '#148F77',
                     'borderColor' => '#148F77',
                     
                 ],
