@@ -37,9 +37,9 @@ class DocumentosAsignarTable extends BaseWidget
             TextColumn::make('deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('deuda_ip')->sortable()->toggleable(),
-            TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
-            TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
+            TextColumn::make('codigo')->sortable()->toggleable(),
+            TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('user.name')->sortable()->toggleable()->label('notificador'),
         ])->deferLoading()
         

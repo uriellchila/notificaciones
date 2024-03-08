@@ -29,16 +29,16 @@ class DocumentosAsignadosTable extends BaseWidget
         ->striped()
         ->query(Documento::query()->where('user_id','!=',null))
         ->columns([
-            TextColumn::make('tipo_documento.nombre')->sortable()->toggleable()->searchable(),
+            TextColumn::make('tipo_documento.nombre')->sortable()->toggleable(),
             TextColumn::make('numero_doc')->sortable()->toggleable()->searchable(),
-            TextColumn::make('anyo_doc')->sortable()->toggleable()->searchable(),
-            TextColumn::make('deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('deuda_ip')->sortable()->toggleable()->searchable(),
-            TextColumn::make('codigo')->sortable()->toggleable()->searchable(),
-            TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true)->searchable(),
-            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador')->searchable(),
+            TextColumn::make('anyo_doc')->sortable()->toggleable(),
+            TextColumn::make('deuda_desde')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('deuda_hasta')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('deuda_ip')->sortable()->toggleable(),
+            TextColumn::make('codigo')->sortable()->toggleable(),
+            TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador'),
         ])->deferLoading()
         ->filters([
             SelectFilter::make('user')->relationship('user', 'name'),

@@ -24,6 +24,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\DocumentoResource\Widgets\TipoNotificacionChart;
+use App\Filament\Resources\DocumentoResource\Widgets\AvanceNotificacionesChart;
 use App\Filament\Resources\DocumentoNotificadorResource\Widgets\TipoNotificacion;
 use App\Filament\Resources\DocumentoResource\Widgets\RankinNotificadoresOverview;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
@@ -99,6 +100,7 @@ class AdminPanelProvider extends PanelProvider
                 RankinNotificadoresOverview::class,
                 TipoNotificacionChart::class,
                 NotificacionesNotificadorChart::class,
+                AvanceNotificacionesChart::class,
                 //DevolucionDocumentosTable::class,
                 //NotificacionesTabla::class,
                 
