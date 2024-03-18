@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\NotificacionDocumentoResource\Pages;
 
-use App\Filament\Resources\NotificacionDocumentoResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use App\Filament\Resources\NotificacionDocumentoResource;
+use App\Filament\Resources\DocumentoResource\Widgets\DocumentosNotificadosTable;
 
 class ManageNotificacionDocumentos extends ManageRecords
 {
@@ -14,6 +15,14 @@ class ManageNotificacionDocumentos extends ManageRecords
     {
         return [
             Actions\CreateAction::make()->label('Registro Notificacion'),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            //DocumentosAsignarTable::class,
+            DocumentosNotificadosTable::class,
+            //NotificadoresChart::class,
         ];
     }
 }

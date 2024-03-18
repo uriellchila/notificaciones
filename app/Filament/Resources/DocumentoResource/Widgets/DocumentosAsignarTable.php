@@ -17,6 +17,7 @@ use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Imports\DocumentoImporter;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class DocumentosAsignarTable extends BaseWidget
 {
@@ -40,7 +41,7 @@ class DocumentosAsignarTable extends BaseWidget
             TextColumn::make('codigo')->sortable()->toggleable(),
             TextColumn::make('razon_social')->sortable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('domicilio')->sortable()->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('user.name')->sortable()->toggleable()->label('notificador'),
+            //TextColumn::make('user.name')->sortable()->toggleable()->label('notificador'),
         ])->deferLoading()
         
         ->filters([
@@ -50,20 +51,35 @@ class DocumentosAsignarTable extends BaseWidget
    
         ->actions([
             //Tables\Actions\EditAction::make(),
-            /*Tables\Actions\Action::make('Asignar')
-            ->form([
-                Select::make('user_id')
-                    ->label('Asignar Notificador')
-                    ->options(User::query()->pluck('name', 'id')),
-                    //->required(),
-                DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
+            Tables\Actions\Action::make('Asignar')
             
-            /*->action(function (array $data, Documento $record): void {
+           /* ->action(function (array $data, Documento $record): void {
                 $record->user()->associate($data['user_id']);
                 $record->save();
+            })*/
+
+            ->action(function (array $data,Documento $record) {
+                    $record->update([
+                        'user_id' => $data['user_id'],
+                        'fecha_para' => $data['fecha_para'],
+                    ]);   
             })
+            ->form([
+                Select::make('user_id')
+                    ->label('Notificador')
+                    ->options(
+                        User::query()
+                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                            ->groupBy('users.name', 'users.id')
+                            ->where('roles.name','Notificador')
+                            ->pluck('users.name', 'users.id')
+                    ),
+                    //->required(),
+                DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
+            ])
             
-            ->icon('heroicon-o-user')*/
+            ->icon('heroicon-o-user')
             //->visible(false)
         ])
         ->headerActions([
@@ -93,11 +109,20 @@ class DocumentosAsignarTable extends BaseWidget
             ->form([
                 Select::make('user_id')
                     ->label('Notificador')
-                    ->options(User::query()->pluck('name', 'id')),
+                    ->options(
+                        User::query()
+                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                            ->groupBy('users.name', 'users.id')
+                            ->where('roles.name','Notificador')
+                            ->pluck('users.name', 'users.id')
+                                
+                    ),
                     //->required(),
                 DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
             ])
-                //->action(fn (Collection $records) => $records->each->update())
+
+            //->action(fn (Collection $records) => $records->each->update())
         ]);
     }
     public static function getPages(): array

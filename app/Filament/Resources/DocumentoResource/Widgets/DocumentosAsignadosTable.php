@@ -7,6 +7,7 @@ use Filament\Tables;
 use App\Models\Documento;
 use Filament\Tables\Table;
 use Tables\Actions\Action;
+use Illuminate\Support\Facades\DB;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NotificacionDocumento;
@@ -14,8 +15,9 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Query\Builder;
 
 class DocumentosAsignadosTable extends BaseWidget
 {   protected int | string | array $columnSpan = 'full';
@@ -68,7 +70,14 @@ class DocumentosAsignadosTable extends BaseWidget
             ->form([
                 Select::make('user_id')
                     ->label('Asignar Notificador')
-                    ->options(User::query()->pluck('name', 'id')),
+                    ->options(
+                        User::query()
+                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                            ->groupBy('users.name', 'users.id')
+                            ->where('roles.name','Notificador')
+                            ->pluck('users.name', 'users.id')
+                    ),
                     //->required(),
             ])
             ->action(function (array $data, Documento $record): void {
@@ -82,20 +91,29 @@ class DocumentosAsignadosTable extends BaseWidget
         ->headerActions([
         ])
         ->bulkActions([
-            /*Tables\Actions\BulkAction::make('Asignar Notificador')
+            Tables\Actions\BulkAction::make('Modificar Notificador')
             ->action(function (array $data,Documento $record, Collection $records) {
                 $records->each(
                     fn (Documento $record) => $record->update([
                         'user_id' => $data['user_id'],
+                        'fecha_para' => $data['fecha_para'],
                     ]),
                 );
             })
             ->form([
                 Select::make('user_id')
                     ->label('Notificador')
-                    ->options(User::query()->pluck('name', 'id')),
-                    
-            ])*/
+                    ->options(
+                        User::query()
+                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                            ->groupBy('users.name', 'users.id')
+                            ->where('roles.name','Notificador')
+                            ->pluck('users.name', 'users.id')
+
+                    ),
+                DatePicker::make('fecha_para')->required()->default(date("Y-m-d")),
+            ])
                 
         ]);
 

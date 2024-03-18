@@ -11,7 +11,7 @@ use App\Models\NotificacionDocumento;
 use Illuminate\Database\Query\Builder;
 
 class AvanceNotificacionesChart extends ChartWidget
-{
+{   protected int | string | array $columnSpan = 'full';
     protected static ?string $heading = 'Asiganados - Notificados';
 
     protected function getData(): array
